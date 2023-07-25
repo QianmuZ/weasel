@@ -81,8 +81,6 @@ public:
     BOOL _IsKeyboardDisabled();
     BOOL _IsKeyboardOpen();
     HRESULT _SetKeyboardOpen(BOOL fOpen);
-	HRESULT _GetCompartmentDWORD(DWORD& value, const GUID guid);
-	HRESULT _SetCompartmentDWORD(const DWORD& value, const GUID guid);
 
 	/* Composition */
 	void _StartComposition(com_ptr<ITfContext> pContext, BOOL fCUASWorkaroundEnabled);
@@ -118,13 +116,8 @@ public:
 
 
 	com_ptr<ITfThreadMgr> _GetThreadMgr() { return _pThreadMgr; }
-	void HandleUICallback(size_t* const sel, size_t* const hov, bool* const next);
 
 private:
-	/* ui callback functions private */
-	void _SelectCandidateOnCurrentPage(const size_t index);
-	void _HandleMouseHoverEvent(const size_t index);
-	void _HandleMousePageEvent(const bool nextPage);
 	/* TSF Related */
 	BOOL _InitThreadMgrEventSink();
 	void _UninitThreadMgrEventSink();
@@ -169,7 +162,6 @@ private:
 	std::wstring _editSessionText;
 
 	com_ptr<CCompartmentEventSink> _pKeyboardCompartmentSink;
-	com_ptr<CCompartmentEventSink> _pConvertionCompartmentSink;
 
 	com_ptr<ITfComposition> _pComposition;
 
@@ -191,4 +183,6 @@ private:
 
 	// guidatom for the display attibute.
 	TfGuidAtom _gaDisplayAttributeInput;
+
+	bool _WinWord{};
 };
