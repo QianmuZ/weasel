@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 #include "WeaselTSF.h"
 #include "WeaselCommon.h"
@@ -6,6 +6,10 @@
 #include "LanguageBar.h"
 #include "Compartment.h"
 #include "ResponseParser.h"
+#include <psapi.h>
+#include <boost/filesystem.hpp>
+#pragma comment(lib, "psapi.lib")
+namespace fs = boost::filesystem;
 
 static void error_message(const WCHAR *msg)
 {
@@ -34,6 +38,22 @@ WeaselTSF::WeaselTSF()
 	_cand = new CCandidateList(this);
 
 	DllAddRef();
+
+	auto pid = GetCurrentProcessId();
+
+	auto hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid);
+
+	std::wstring name;
+	name.reserve(MAX_PATH);
+
+	GetProcessImageFileName(hProcess, &name[0], name.capacity());
+	name = &name[0];
+
+	CloseHandle(hProcess);
+	if (fs::path(name).filename().wstring() == L"WINWORD.EXE")
+	{
+		_WinWord = true;
+	}
 }
 
 WeaselTSF::~WeaselTSF()
